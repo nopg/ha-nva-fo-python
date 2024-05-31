@@ -44,7 +44,6 @@ required_env_vars = {
 for name, value in required_env_vars.items():
     if not value:
         logging.fatal(f"Error, required Environment Variable '{name}' was not found or is not set.")
-        raise Exception("HEYYYYYOOOOOOOOOOOOOOOO")
 
 # Environment Variables cleanup
 ROUTE_NAMES = [r.strip() for r in ROUTE_NAMES.split(",")]
