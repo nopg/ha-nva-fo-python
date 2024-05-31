@@ -302,7 +302,7 @@ def ha_nva_fo(myTimer: func.TimerRequest) -> None:
         logging.warning("The timer is past due!")
 
     logging.warning("Timer triggered Route check:")
-    logging.warning(f"schedule: {SCHEDULE=}")
+    logging.warning(f"schedule: {SCHEDULE}")
     main()
 
 
