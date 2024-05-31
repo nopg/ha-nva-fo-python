@@ -1,0 +1,4 @@
+black
+isort
+pylama
+-r requirements.txt
