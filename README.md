@@ -42,4 +42,4 @@ Other settings that may be modified if desired:
 
 
 ### Other
-SCM_DO_BUILD_DURING_DEPLOYMENT=True Maybe needed, or just for re-deploys?
+
