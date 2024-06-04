@@ -33,6 +33,7 @@ ROUTE_TAG = os.getenv("ROUTE_TAG")
 ROUTE_NAMES = os.getenv("ROUTE_NAMES")
 HEARTBEAT = int(os.getenv("HEARTBEAT", "30"))
 
+# Check their existence
 required_env_vars = {
     "NVA_SUBSCRIPTION": NVA_SUBSCRIPTION,
     "NVA_RESOURCE_GROUPS": NVA_RESOURCE_GROUPS,
@@ -195,7 +196,7 @@ def get_relevant_routes() -> list[RouteDetails]:
             for route_table in list(
                 net_client.route_tables.list(resource_group_name=resource_group.name)
             ):
-                if ROUTE_TAG in route_table.tags:
+                if route_table.tags and ROUTE_TAG in route_table.tags:
                     for route_name in ROUTE_NAMES:
                         try:
                             route = net_client.routes.get(
@@ -208,7 +209,7 @@ def get_relevant_routes() -> list[RouteDetails]:
                             continue
 
                         if not route:
-                            logging.warning("uh... had route table tagged w/ sdwan, but no route?")
+                            logging.warning("uh... had route table tagged, but no route?")
                             continue
 
                         relevant_routes.append(
