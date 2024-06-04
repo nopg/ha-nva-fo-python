@@ -205,7 +205,9 @@ def get_relevant_routes() -> list[RouteDetails]:
                                 route_name=route_name,
                             )
                         except ResourceNotFoundError:
-                            logging.warning(f"route `{route_name}` was not found!")
+                            logging.warning(
+                                f"route `{route_name}` was not found in RT: {route_table.name}"
+                            )
                             continue
 
                         if not route:
@@ -233,7 +235,11 @@ def update_routes(relevant_routes: list[RouteDetails], valid_next_hops: list[str
             and PREEMPT
             and relevant_route.route_object.next_hop_ip_address != valid_next_hops[0]
         ):
-            logging.warning(f"Preempt enabled, failing back to Primary..")
+            logging.warning(
+                f"{relevant_route.route_table_object.name}/"
+                f"{relevant_route.route_object.name}: Preempt enabled, "
+                f"failing back to Primary.."
+            )
             relevant_route.to_update = True
 
         elif relevant_route.route_object.next_hop_ip_address in valid_next_hops:
