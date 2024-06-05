@@ -1,4 +1,5 @@
 # Azure NVA Route Updater
+
 This Azure Function is used to automatically failover Azure UDR's based on VM Status (running/down)
 This allows NVAs (Network Virtual Appliances) such as Meraki MX to be used for failover without needing BGP or other advanced topologies.
 
@@ -80,5 +81,3 @@ the Function App (See [Azure Functions Bug](https://github.com/Azure/azure-funct
     scm-do-build-during-deployment: false
     enable-oryx-build: false
 ```
-
-( This originally came from: https://github.com/Azure/ha-nva-fo, but it it didn't work and who wants to look at Powershell?)
