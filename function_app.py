@@ -32,6 +32,7 @@ NVA_SECONDARY = os.getenv("NVA_SECONDARY")
 ROUTE_TAG = os.getenv("ROUTE_TAG")
 ROUTE_NAMES = os.getenv("ROUTE_NAMES")
 HEARTBEAT = int(os.getenv("HEARTBEAT", "30"))
+ENABLED = os.getenv("ENABLED", os.getenv("ENABLE", "True"))
 
 # Check their existence
 required_env_vars = {
@@ -55,10 +56,15 @@ NVA_RESOURCE_GROUPS = [rg.strip() for rg in NVA_RESOURCE_GROUPS.split(",")]
 
 if NVA_SUBSCRIPTION not in OTHER_SUBSCRIPTIONS:
     OTHER_SUBSCRIPTIONS.append(NVA_SUBSCRIPTION)
+
 try:
     PREEMPT = strtobool(os.getenv("PREEMPT", "False"))
 except ValueError:
     PREEMPT = False
+try:
+    ENABLED = strtobool(os.getenv("ENABLED", "True"))
+except ValueError:
+    ENABLED = False
 
 
 # Set Cron Schedule for Timer Trigger
@@ -280,6 +286,9 @@ def update_routes(relevant_routes: list[RouteDetails], valid_next_hops: list[str
 
 def main():
     """Run Route Updater"""
+    if not ENABLED:
+        logging.warning("Disabled, skipping..")
+        return
 
     logging.warning("starting...")
     nva_vms = get_nva_vms()

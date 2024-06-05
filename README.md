@@ -39,6 +39,7 @@ Other settings that may be modified if desired:
 | ----------------- | ----------------------------------------- |
 | HEARTBEAT         | (How many SECONDS to wait before each status check) If above 60 seconds, it must be divisible by 60 (i.e. in minutes) Default: 30 seconds |
 | PREEMPT           | (True or False, Auto fail-back to Primary once it comes back up) Default: False |
+| ENABLED           | (True or False) Default: True |
 
 
 ### Other
