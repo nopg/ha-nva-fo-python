@@ -15,7 +15,7 @@ Nothing will be modified unless the Route Table Tag AND the UDR Name matches wha
 ## Authentication / Permissions
 To allow the Function access to view VM status and modify existing UDR's we need to authenticate to Azure. It is recommended to assign your Function App a User Assigned Identity (via the Identity section of your Function App), disable basic authentication, and create GitHub Federated Credentials (see the section below). The "Easy Button" is to use a System Assigned Identity instead and enable Basic Authention within the Function App. 
 
-For development purposes or other reasons, you can instead use an App Registration with Client Secrets instead. To use these, create the below environment variables in your Function App:  
+For development purposes or other reasons, you can instead use an App Registration with Client Secrets instead. To use these, use the below environment variables in your Function App:  
 AZURE_CLIENT_ID  
 AZURE_CLIENT_SECRET  
 AZURE_TENANT_ID  
@@ -42,12 +42,12 @@ In order to find the VM's and Route Tables, we also need the subscription(s) in 
 | Variable          | Description                               |
 | ----------------- | ----------------------------------------- |
 | NVA_SUBSCRIPTION  | (Subscription ID that contains the NVA(s)) |
-| OTHER_SUBSCRIPTIONS | (Only necesssary if other subscriptions are in use for the NVAs/Route Tables) |
 | NVA_RESOURCE_GROUPS | (Comma separated list of any Resource Groups associated with the NVA/Route Tables) |
 | NVA_PRIMARY         | (Name of Primary NVA) |
 | NVA_SECONDARY       | (Name of Secondary NVA) |
 | ROUTE_TAG           | (Tag name assigned to the associated Route Table (value doesn't matter)) |
 | ROUTE_NAMES         | (Comma separated list with the names of any relevant UDR's that must be updated) |
+
 
 ## Settings
 Other settings that may be modified if desired:
@@ -56,28 +56,29 @@ Other settings that may be modified if desired:
 | HEARTBEAT         | (How many SECONDS to wait before each status check) If above 60 seconds, it must be divisible by 60 (i.e. in minutes) Default: 30 seconds |
 | PREEMPT           | (True or False, Auto fail-back to Primary once it comes back up) Default: False |
 | ENABLED           | (True or False) Default: True |
-
+| OTHER_SUBSCRIPTIONS | (Only necesssary if other subscriptions are in use for the NVAs/Route Tables) |
+| MANAGED_IDENTITY_ID | (only create if NOT using basic-auth, this is the Client ID of your User Managed Identity) |
 
 ### Other
 
 Deploy via the Production Deployment Center, slots may or may not work, but are unsupported.
 
-KNOWN BUG  (as of June 4, 2024):
+**KNOWN BUG**  (as of June 4, 2024):
 When using User Identity and NOT Basic Authentication, Azure currently does not show the Function within
-the Function App (See [Azure Functions Bug](https://github.com/Azure/azure-functions-python-worker/issues/1338)). The existing workaround is to modify your GH Actions Workflow file via these steps:
+the Function App (See [Azure Functions Bug](https://github.com/Azure/azure-functions-python-worker/issues/1338)). The existing workaround is to modify your GH Actions Workflow file via these steps, AFTER the initial deployment:
 
 1. Inside the "Install dependencies" step of the build job, change the pip install command
-    ```
+```
     pip install --target=".python_packages/lib/site-packages" -r requirements.txt
-    ```
-2 Inside the "Zip artifact for deployment" step of the build job, change the zip command so it includes the python_packages
-    ```
+```
+2. Inside the "Zip artifact for deployment" step of the build job, change the zip command so it includes the python_packages
+```
     zip release.zip .python_packages ./* -r
-    ```
+```
 3. Inside the "Deploy to Azure Functions" step of the deploy job, change these values so it doesn't do a remote build
-    ```
+```
     scm-do-build-during-deployment: false
     enable-oryx-build: false
-    ```
+```
 
 ( This originally came from: https://github.com/Azure/ha-nva-fo, but it it didn't work and who wants to look at Powershell?)

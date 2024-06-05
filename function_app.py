@@ -17,6 +17,7 @@ from azure.mgmt.network.models import Route, RouteTable
 from azure.mgmt.resource import ResourceManagementClient
 
 app = func.FunctionApp()
+VERSION = "0.0.1"
 
 
 # Environment Variables
@@ -323,7 +324,7 @@ def ha_nva_fo(myTimer: func.TimerRequest) -> None:
         logging.warning("The timer is past due!")
 
     logging.warning("Timer triggered Route check:")
-    logging.warning(f"schedule: {SCHEDULE}")
+    logging.warning(f"Version: {VERSION} \t Schedule: {SCHEDULE}")
     main()
 
 
