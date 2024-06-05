@@ -20,10 +20,7 @@ app = func.FunctionApp()
 
 
 # Environment Variables
-CREDENTIALS = (
-    DefaultAzureCredential()
-)  # Managed System Identity on Function App or environment variable AZURE_CLIENT_ID (user managed)
-# and/or AZURE_CLIENT_SECRET and AZURE_TENANT_ID (for SP based login)
+MANAGED_IDENTITY_ID = os.getenv("MANAGED_IDENTITY_ID")
 NVA_SUBSCRIPTION = os.getenv("NVA_SUBSCRIPTION")
 NVA_RESOURCE_GROUPS = os.getenv("NVA_RESOURCE_GROUPS")
 OTHER_SUBSCRIPTIONS = os.getenv("OTHER_SUBSCRIPTIONS")
@@ -46,6 +43,14 @@ required_env_vars = {
 for name, value in required_env_vars.items():
     if not value:
         logging.fatal(f"Error, required Environment Variable '{name}' was not found or is not set.")
+
+
+# Managed System Identity on Function App or environment variable AZURE_CLIENT_ID
+# and/or AZURE_CLIENT_SECRET/ID and AZURE_TENANT_ID (for SP based login)
+if MANAGED_IDENTITY_ID:
+    CREDENTIALS = DefaultAzureCredential(managed_identity_client_id=MANAGED_IDENTITY_ID)
+else:
+    CREDENTIALS = DefaultAzureCredential()
 
 # Environment Variables cleanup
 ROUTE_NAMES = [r.strip() for r in ROUTE_NAMES.split(",")]

@@ -62,4 +62,22 @@ Other settings that may be modified if desired:
 
 Deploy via the Production Deployment Center, slots may or may not work, but are unsupported.
 
-(Originally came from: https://github.com/Azure/ha-nva-fo, but who wants to look at Powershell?)
+KNOWN BUG  (as of June 4, 2024):
+When using User Identity and NOT Basic Authentication, Azure currently does not show the Function within
+the Function App (See [Azure Functions Bug](https://github.com/Azure/azure-functions-python-worker/issues/1338)). The existing workaround is to modify your GH Actions Workflow file via these steps:
+
+1. Inside the "Install dependencies" step of the build job, change the pip install command
+    ```
+    pip install --target=".python_packages/lib/site-packages" -r requirements.txt
+    ```
+2 Inside the "Zip artifact for deployment" step of the build job, change the zip command so it includes the python_packages
+    ```
+    zip release.zip .python_packages ./* -r
+    ```
+3. Inside the "Deploy to Azure Functions" step of the deploy job, change these values so it doesn't do a remote build
+    ```
+    scm-do-build-during-deployment: false
+    enable-oryx-build: false
+    ```
+
+( This originally came from: https://github.com/Azure/ha-nva-fo, but it it didn't work and who wants to look at Powershell?)
