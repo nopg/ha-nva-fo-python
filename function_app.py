@@ -218,7 +218,7 @@ def get_relevant_routes() -> list[RouteDetails]:
                             )
                         except ResourceNotFoundError:
                             logging.warning(
-                                f"route `{route_name}` was not found in RT: {route_table.name}"
+                                f"route name `{route_name}` was not found in RT: {route_table.name}"
                             )
                             continue
 
