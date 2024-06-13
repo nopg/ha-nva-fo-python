@@ -17,7 +17,7 @@ from azure.mgmt.network.models import Route, RouteTable
 from azure.mgmt.resource import ResourceManagementClient
 
 app = func.FunctionApp()
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 
 # Environment Variables
